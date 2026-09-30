@@ -1,9 +1,32 @@
 import networkx as nx
 import matplotlib.pyplot as plt
+from collections import defaultdict, deque
+import heapq
+
+
 #This assignment is to trace breadth first, depth first, and uniform cost search through
 # a directed search graph
 
 print("Hi AI overlords")
+
+
+def breadth_first_search(graph,start_node,goal_node):
+    visited = set([start_node])
+    queue = deque([start_node])
+    traversal = []
+    while queue:
+        current = queue.popleft()
+        traversal.append(current)
+
+        if current == goal_node:
+            return traversal
+
+        for neighbor,weight in graph[current]:
+            if neighbor not in visited:
+                visited.add(neighbor)
+                queue.append(neighbor)
+    return traversal
+
 
 
 def build_graph(edge_list):
@@ -47,4 +70,5 @@ edges = [
 
 my_graph = build_graph( edges)
 draw_graph(my_graph)
+print("BFS Traversal:: ",breadth_first_search(my_graph, "S","G"))
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
