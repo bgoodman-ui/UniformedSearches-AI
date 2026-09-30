@@ -12,35 +12,35 @@ print("Hi AI overlords")
 
 def breadth_first_search(graph,start_node,goal_node):
     visited = set([start_node])
-    queue = deque([start_node])
+    queue = deque([(start_node,0)])
     traversal = []
     while queue:
-        current = queue.popleft()
+        current, cost = queue.popleft()
         traversal.append(current)
 
         if current == goal_node:
-            return traversal
+            return traversal, cost
 
         for neighbor,weight in graph[current]:
             if neighbor not in visited:
                 visited.add(neighbor)
-                queue.append(neighbor)
-    return traversal
+                queue.append((neighbor,cost + weight))
+    return traversal, None
 
 def depth_first_search(graph,start_node,goal_node):
     visited = set([start_node])
-    queue = deque([start_node])
+    queue = deque([(start_node, 0)])
     traversal = []
     while queue:
-        current = queue.pop()
+        current, cost = queue.pop()
         traversal.append(current)
         if current == goal_node:
-            return traversal
+            return traversal, cost
         for neighbor,weight in graph[current]:
             if neighbor not in visited:
                 visited.add(neighbor)
-                queue.append(neighbor)
-    return traversal
+                queue.append((neighbor, cost + weight))
+    return traversal,None
 
 
 def uniform_cost_search(graph,start_node,goal_node):
@@ -111,9 +111,13 @@ edges = [
 ]
 
 my_graph = build_graph( edges)
-draw_graph(my_graph)
-print("BFS Traversal:: ",breadth_first_search(my_graph, "S","G"))
-print("DFS Traversal:: ",depth_first_search(my_graph, "S","G"))
+#draw_graph(my_graph)
+bfs_traversal, bfs_cost = breadth_first_search(my_graph, "S", "G")
+print("BFS Traversal::", bfs_traversal)
+print("BFS Cost::", bfs_cost)
+dfs_traversal, dfs_cost = depth_first_search(my_graph, "S", "G")
+print("DFS Traversal::", dfs_traversal)
+print("DFS Cost::", dfs_cost)
 ucs_traversal, ucs_cost = uniform_cost_search(my_graph, "S", "G")
 print("UCS Traversal::", ucs_traversal)
 print("UCS Cost::", ucs_cost)
