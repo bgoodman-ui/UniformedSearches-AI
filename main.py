@@ -27,6 +27,48 @@ def breadth_first_search(graph,start_node,goal_node):
                 queue.append(neighbor)
     return traversal
 
+def depth_first_search(graph,start_node,goal_node):
+    visited = set([start_node])
+    queue = deque([start_node])
+    traversal = []
+    while queue:
+        current = queue.pop()
+        traversal.append(current)
+        if current == goal_node:
+            return traversal
+        for neighbor,weight in graph[current]:
+            if neighbor not in visited:
+                visited.add(neighbor)
+                queue.append(neighbor)
+    return traversal
+
+
+def uniform_cost_search(graph,start_node,goal_node):
+    order = 0 #used for tie breaking : it is the insertion order
+    frontier = [(0, order, start_node)] #starting cost of 0
+    best_cost = {start_node: 0}  #cheapest path
+    explored = set()
+    traversal = []
+    while frontier:
+        cost, _,current = heapq.heappop(frontier)
+
+        if current in explored:
+            continue
+        explored.add(current)
+        traversal.append(current)
+        if current == goal_node:
+            return traversal, cost
+
+        for neighbor,weight in graph[current]:
+            new_cost = cost + weight
+            if neighbor not in explored and new_cost < best_cost.get(neighbor, float('inf')):
+                best_cost[neighbor] = new_cost
+                order += 1
+                heapq.heappush(frontier, (new_cost,order, neighbor))
+    return traversal, None
+
+
+
 
 
 def build_graph(edge_list):
@@ -71,4 +113,8 @@ edges = [
 my_graph = build_graph( edges)
 draw_graph(my_graph)
 print("BFS Traversal:: ",breadth_first_search(my_graph, "S","G"))
+print("DFS Traversal:: ",depth_first_search(my_graph, "S","G"))
+ucs_traversal, ucs_cost = uniform_cost_search(my_graph, "S", "G")
+print("UCS Traversal::", ucs_traversal)
+print("UCS Cost::", ucs_cost)
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
