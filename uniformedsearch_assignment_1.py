@@ -11,25 +11,35 @@ print("Hi AI overlords")
 
 
 def breadth_first_search(graph,start_node,goal_node):
-    visited = set([start_node])
+    visited = {start_node}
     queue = deque([(start_node,0)])
+    parent = {start_node:None}
     traversal = []
     while queue:
         current, cost = queue.popleft()
         traversal.append(current)
 
         if current == goal_node:
-            return traversal, cost
+            #go backwards from goal to find solution path
+            path = []
+            node = current
+            while node is not None:
+                path.append(node)
+                node = parent[node]
+            path.reverse()
+            return traversal,path, cost
 
         for neighbor,weight in graph[current]:
             if neighbor not in visited:
                 visited.add(neighbor)
+                parent[neighbor] = current
                 queue.append((neighbor,cost + weight))
-    return traversal, None
+    return traversal, None, None
 
 def depth_first_search(graph,start_node,goal_node):
-    visited = set([start_node])
+    visited = {start_node}
     queue = deque([(start_node, 0)])
+    parent = {start_node:None}
     traversal = []
     while queue:
         current, cost = queue.pop()
@@ -112,13 +122,16 @@ edges = [
 
 my_graph = build_graph( edges)
 #draw_graph(my_graph)
-bfs_traversal, bfs_cost = breadth_first_search(my_graph, "S", "G")
+bfs_traversal,BSolution, bfs_cost = breadth_first_search(my_graph, "S", "G")
 print("BFS Traversal::", bfs_traversal)
+print("BFS Solution::", BSolution)
 print("BFS Cost::", bfs_cost)
 dfs_traversal, dfs_cost = depth_first_search(my_graph, "S", "G")
 print("DFS Traversal::", dfs_traversal)
+print("DFS Solution::")
 print("DFS Cost::", dfs_cost)
 ucs_traversal, ucs_cost = uniform_cost_search(my_graph, "S", "G")
 print("UCS Traversal::", ucs_traversal)
+print("UCS Solution::")
 print("UCS Cost::", ucs_cost)
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
